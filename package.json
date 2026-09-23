@@ -10,7 +10,10 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "check": "astro check"
+    "lint": "eslint .",
+    "check": "astro check",
+    "test:unit": "vitest",
+    "test:e2e": "playwright test ."
   },
   "dependencies": {
     "@astrojs/check": "^0.9.10",
@@ -23,5 +26,10 @@
   },
   "allowScripts": {
     "esbuild": true
+  },
+  "devDependencies": {
+    "@typescript-eslint/parser": "^8.70.0",
+    "eslint": "^10.11.0",
+    "eslint-plugin-astro": "^1.7.0"
   }
 }
