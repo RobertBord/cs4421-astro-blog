@@ -1,11 +1,12 @@
 import eslintPluginAstro from "eslint-plugin-astro"
+import tsParser from "@typescript-eslint/parser"
 
 export default [
   // add more generic rule sets here, such as:
   // js.configs.recommended,
   ...eslintPluginAstro.configs.recommended,
   {
-    files: ["**/*.{js,mjs,cjs,ts}"],
+    files: ["**/*.{js,mjs,cjs,ts,tsx}"],
     languageOptions: {
       sourceType: "module",
     },
@@ -21,6 +22,12 @@ export default [
         espree: [".js", ".mjs", ".cjs"],
         "@typescript-eslint/parser": [".ts", ".tsx"],
       },
+    },
+  },
+  {
+    files: ["**/*.{ts,tsx}"],
+    languageOptions: {
+      parser: tsParser,
     },
   },
 ]
