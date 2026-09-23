@@ -10,11 +10,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-<<<<<<< HEAD
     "lint": "eslint .",
-=======
     "test:unit": "vitest",
->>>>>>> f23c8f4 (feat(ci): configure testing tool)
     "check": "astro check"
   },
   "dependencies": {
@@ -30,12 +27,9 @@
     "esbuild": true
   },
   "devDependencies": {
-<<<<<<< HEAD
     "@typescript-eslint/parser": "^8.70.0",
     "eslint": "^10.11.0",
-    "eslint-plugin-astro": "^1.7.0"
-=======
+    "eslint-plugin-astro": "^1.7.0",
     "vitest": "^5.0.1"
->>>>>>> f23c8f4 (feat(ci): configure testing tool)
   }
 }
