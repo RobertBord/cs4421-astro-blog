@@ -23,7 +23,8 @@ jobs:
         run: npm run build
 
       - name: Change to CDK folder
-        run: cd cdk && npm ci
+        working-directory: cdk
+        run: npm ci
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
