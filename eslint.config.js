@@ -16,7 +16,7 @@ export default [
     rules: {
       // override/add rules settings here, such as:
       // "astro/no-set-html-directive": "error"
-      "no-console": "error",
+      // "no-console": "error",
     },
     settings: {
       "import/core-modules": ["astro:content", "astro:transitions"],
