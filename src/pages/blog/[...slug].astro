@@ -1,7 +1,7 @@
 ---
 import { type CollectionEntry, getCollection, getEntry, render } from 'astro:content';
 import BlogPost from '../../layouts/BlogPost.astro';
-import { publishedPosts } from '../../utils/posts';
+import { publishedPosts, relatedPosts } from '../../utils/posts';
 
 export async function getStaticPaths() {
 	const posts = publishedPosts(await getCollection('blog'));
@@ -15,8 +15,9 @@ type Props = CollectionEntry<'blog'>;
 const post = Astro.props;
 const { Content } = await render(post);
 const author = post.data.author ? await getEntry(post.data.author) : undefined;
+const related = relatedPosts(await getCollection('blog'), post);
 ---
 
-<BlogPost {...post.data} author={author}>
+<BlogPost {...post.data} author={author} related={related}>
 	<Content />
 </BlogPost>
