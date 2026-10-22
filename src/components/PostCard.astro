@@ -1,0 +1,31 @@
+---
+import { Image } from 'astro:assets';
+import { getEntry, type CollectionEntry } from 'astro:content';
+import FormattedDate from './FormattedDate.astro';
+interface Props { post: CollectionEntry<'blog'>; }
+const { post } = Astro.props;
+const author = post.data.author ? await getEntry(post.data.author) : undefined;
+---
+<article class="story">
+	{post.data.heroImage && <a class="image-link" href={`/blog/${post.id}/`} tabindex="-1" aria-hidden="true"><Image src={post.data.heroImage} width={720} height={450} alt={post.data.heroAlt ?? ''} /></a>}
+	<p class="eyebrow">{post.data.category} / {post.data.articleType}</p>
+	<h2><a href={`/blog/${post.id}/`}>{post.data.title}</a></h2>
+	<p class="summary">{post.data.description}</p>
+	<p class="byline">{author?.data.name ?? 'F1 bits'} <span aria-hidden="true">/</span> <FormattedDate date={post.data.pubDate} /></p>
+	{post.data.imageCredit && <p class="credit">Image: {post.data.imageSource ? <a href={post.data.imageSource}>{post.data.imageCredit}</a> : post.data.imageCredit}</p>}
+</article>
+<style>
+	.story { min-width: 0; padding-bottom: 1.5rem; }
+	.image-link { display: block; aspect-ratio: 16 / 10; overflow: hidden; background: rgb(var(--gray-light)); }
+	img { width: 100%; height: 100%; object-fit: cover; transition: transform 250ms ease; }
+	.image-link:hover img { transform: scale(1.025); }
+	h2 { font-size: 1.75rem; margin-block: 0.5rem 0.75rem; }
+	h2 a { color: var(--ink); text-decoration: none; }
+	h2 a:hover { color: var(--accent); text-decoration: underline; text-underline-offset: 4px; }
+	.eyebrow { margin: 1rem 0 0; }
+	.summary { font-size: 1rem; margin: 0 0 1rem; }
+	.byline { color: rgb(var(--gray)); font-size: 0.8rem; }
+	.byline span { padding-inline: 0.5rem; }
+	.credit { font-size: 0.7rem; color: rgb(var(--gray)); }
+	@media (prefers-reduced-motion: reduce) { img { transition: none; } }
+</style>
