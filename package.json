@@ -11,7 +11,8 @@
     "preview": "astro preview",
     "astro": "astro",
     "lint": "eslint .",
-    "test:unit": "vitest --exclude **/cdk/**",
+    "test:unit": "vitest --exclude **/cdk/** --exclude **/e2e/**",
+    "test:e2e": "playwright test",
     "brand:assets": "node scripts/brand-assets.mjs",
     "check": "astro check"
   },
@@ -28,6 +29,8 @@
     "esbuild": true
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
+    "@playwright/test": "^1.64.1",
     "@typescript-eslint/parser": "^8.70.0",
     "eslint": "^10.11.0",
     "eslint-plugin-astro": "^1.7.0",

@@ -7,6 +7,13 @@ import { defineConfig, fontProviders } from 'astro/config';
 // https://astro.build/config
 export default defineConfig({
 	site: process.env.SITE_URL || 'https://example.com',
+	redirects: {
+		'/blog/first-post/': '/blog/',
+		'/blog/second-post/': '/blog/',
+		'/blog/third-post/': '/blog/',
+		'/blog/markdown-style-guide/': '/blog/',
+		'/blog/using-mdx/': '/blog/',
+	},
 	integrations: [mdx(), sitemap()],
 	fonts: [
 		{
