@@ -23,4 +23,17 @@ jobs:
         run: |
           npm run lint
           npm run check
-          npm run test:unit
+          npm run test:unit -- --run
+
+      - name: Install Browser Test Runtime
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Desktop and Mobile Launch Checks
+        run: npm run test:e2e
+
+      - name: Upload Browser Test Artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-test-results
+          path: test-results/

@@ -15,8 +15,15 @@ const blog = defineCollection({
 			pubDate: z.coerce.date(),
 			updatedDate: z.coerce.date().optional(),
 			heroImage: z.optional(image()),
-			author: reference('authors').optional(),
-		}).extend(editorialSchema.shape),
+				author: reference('authors').optional(),
+			}).extend(editorialSchema.shape).superRefine((data, context) => {
+				if (data.heroImage && (!data.heroAlt || !data.imageCredit || !data.imageSource)) {
+					context.addIssue({ code: 'custom', message: 'Hero images require heroAlt, imageCredit, and imageSource.', path: ['heroImage'] });
+				}
+				if (data.articleType === 'Reported rumour' && !data.reportingCutoff) {
+					context.addIssue({ code: 'custom', message: 'Reported rumours require a reportingCutoff.', path: ['reportingCutoff'] });
+				}
+			}),
 });
 
 const authors = defineCollection({
@@ -26,7 +33,7 @@ const authors = defineCollection({
 	schema: ({ image }) =>
 		z.object({
 			name: z.string(),
-			avatar: image().optional(),
+				avatar: image().optional(),
 			bio: z.string(),
 			socialLinks: z
 				.array(
