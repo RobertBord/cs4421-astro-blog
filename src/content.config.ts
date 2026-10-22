@@ -26,7 +26,7 @@ const authors = defineCollection({
 	schema: ({ image }) =>
 		z.object({
 			name: z.string(),
-			avatar: image(),
+			avatar: image().optional(),
 			bio: z.string(),
 			socialLinks: z
 				.array(

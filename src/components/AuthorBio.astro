@@ -11,7 +11,7 @@ const { name, avatar, bio, socialLinks } = author.data;
 ---
 
 <section class="author-bio">
-	<Image class="author-avatar" src={avatar} alt={`Photo of ${name}`} width={96} height={96} />
+	{avatar ? <Image class="author-avatar" src={avatar} alt={`Photo of ${name}`} width={64} height={64} /> : <img class="author-avatar" src="/brand/icon.svg" alt="" width="64" height="64" />}
 	<div class="author-details">
 		<h2 class="author-name">{name}</h2>
 		<p class="author-description">{bio}</p>
@@ -41,9 +41,9 @@ const { name, avatar, bio, socialLinks } = author.data;
 		border-top: 1px solid rgb(var(--gray-light));
 	}
 	.author-avatar {
-		width: 96px;
-		height: 96px;
-		border-radius: 50%;
+		width: 64px;
+		height: 64px;
+		border-radius: 4px;
 		object-fit: cover;
 		flex-shrink: 0;
 	}
