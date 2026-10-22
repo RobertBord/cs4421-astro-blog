@@ -6,85 +6,67 @@ import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import Header from '../components/Header.astro';
-
+import PostCard from '../components/PostCard.astro';
+import { categorySlug } from '../utils/posts';
 type Props = Pick<CollectionEntry<'blog'>['data'], 'title' | 'description' | 'pubDate'> & Partial<Omit<CollectionEntry<'blog'>['data'], 'author'>> & {
 	author?: CollectionEntry<'authors'>;
+	related?: CollectionEntry<'blog'>[];
 };
-
-const { title, description, pubDate, updatedDate, heroImage, author } = Astro.props;
+const { title, description, pubDate, updatedDate, heroImage, heroAlt, imageCredit, imageSource, author, category, articleType = 'Analysis', reportingCutoff, tags = [], related = [] } = Astro.props;
 ---
-
+<!doctype html>
 <html lang="en">
-	<head>
-		<BaseHead title={title} description={description} />
-		<style>
-			main {
-				width: calc(100% - 2em);
-				max-width: 100%;
-				margin: 0;
-			}
-			.hero-image {
-				width: 100%;
-			}
-			.hero-image img {
-				display: block;
-				margin: 0 auto;
-				border-radius: 12px;
-				box-shadow: var(--box-shadow);
-			}
-			.prose {
-				width: 720px;
-				max-width: calc(100% - 2em);
-				margin: auto;
-				padding: 1em;
-				color: rgb(var(--gray-dark));
-			}
-			.title {
-				margin-bottom: 1em;
-				padding: 1em 0;
-				text-align: center;
-				line-height: 1;
-			}
-			.title h1 {
-				margin: 0 0 0.5em 0;
-			}
-			.date {
-				margin-bottom: 0.5em;
-				color: rgb(var(--gray));
-			}
-			.last-updated-on {
-				font-style: italic;
-			}
-		</style>
-	</head>
-
+	<head><BaseHead title={title} description={description} image={heroImage} /></head>
 	<body>
 		<Header />
-		<main>
+		<main id="main" class="site-width" tabindex="-1">
 			<article>
-				<div class="hero-image">
-					{heroImage && <Image width={1020} height={510} src={heroImage} alt="" />}
-				</div>
-				<div class="prose">
-					<div class="title">
-						<div class="date">
-							<FormattedDate date={pubDate} />
-							{
-								updatedDate && (
-									<div class="last-updated-on">
-										Last updated on <FormattedDate date={updatedDate} />
-									</div>
-								)
-							}
-						</div>
-						<h1>{title}</h1>
-						<hr />
-					</div>
-					<slot />
+				<header class="article-heading">
+					<a class="back" href="/blog/">All articles</a>
+					<p class="eyebrow">{category && <><a href={`/blog/category/${categorySlug(category)}/`}>{category}</a> / </>}{articleType}</p>
+					<h1>{title}</h1><p class="standfirst">{description}</p>
+					<p class="meta">By {author?.data.name ?? 'F1 bits'} <span aria-hidden="true">/</span> <FormattedDate date={pubDate} /></p>
+					{updatedDate && updatedDate.valueOf() !== pubDate.valueOf() && <p class="meta">Updated <FormattedDate date={updatedDate} /></p>}
+					{reportingCutoff && <p class="cutoff">Reporting cutoff: <FormattedDate date={reportingCutoff} />. This article reflects the information available at that time.</p>}
+					{articleType === 'Reported rumour' && <p class="rumour">Reported rumour, not a confirmed signing. Sources and uncertainty are identified below.</p>}
+				</header>
+				{heroImage && <figure><Image src={heroImage} width={1160} height={725} alt={heroAlt ?? ''} loading="eager" fetchpriority="high" /><figcaption>{imageSource ? <a href={imageSource}>{imageCredit}</a> : imageCredit}</figcaption></figure>}
+				<div class="prose"><slot />
+					{tags.length > 0 && <p class="tags">Filed under: {tags.join(' / ')}</p>}
 					{author && <AuthorBio author={author} />}
 				</div>
 			</article>
+			{related.length > 0 && <section class="related"><h2>Keep reading</h2><div>{related.map(post => <PostCard post={post} />)}</div></section>}
 		</main>
 		<Footer />
 	</body>
 </html>
+<style>
+	main { max-width: none; padding: 2rem 0; }
+	.article-heading { max-width: 840px; margin: 0 auto 2rem; }
+	.back { font-size: 0.8rem; }
+	h1 { font-size: 3.5rem; margin-block: 0.8rem 1rem; }
+	.standfirst { font-size: 1.2rem; color: rgb(var(--gray)); line-height: 1.6; }
+	.meta { font-size: 0.85rem; margin: 0.5rem 0; }
+	.meta span { padding-inline: 0.75rem; }
+	.cutoff { font-size: 0.8rem; color: rgb(var(--gray)); }
+	.rumour { border-left: 3px solid var(--accent); padding: 0.6rem 1rem; background: #f8e8e8; font-size: 0.9rem; }
+	figure { margin: 0 0 2rem; }
+	figure img { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; }
+	figcaption { font-size: 0.75rem; padding-top: 0.5rem; color: rgb(var(--gray)); }
+	.prose { max-width: 720px; margin-inline: auto; }
+	.prose :global(h2) { font-size: 1.9rem; margin-top: 2.5rem; }
+	.prose :global(h3) { font-size: 1.4rem; margin-top: 2rem; }
+	.prose :global(p) { margin-bottom: 1.5rem; }
+	.prose :global(a) { text-underline-offset: 3px; }
+	.prose :global(table) { display: block; overflow-x: auto; border-collapse: collapse; font-size: 0.9rem; }
+	.prose :global(th), .prose :global(td) { border-bottom: 1px solid var(--line); padding: 0.75rem; text-align: left; }
+	.prose :global(pre) { overflow-x: auto; max-width: 100%; font-size: 0.85rem; }
+	.prose :global(blockquote) { font-size: 1.1rem; }
+	.prose :global(li) { margin-block: 0.5rem; }
+	.tags { font-size: 0.8rem; border-top: 1px solid var(--line); padding-top: 1rem; }
+	.related { border-top: 2px solid var(--ink); margin-top: 3rem; padding-top: 2rem; }
+	.related h2 { font-size: 2rem; }
+	.related > div { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2rem; }
+	@media (max-width: 680px) { h1 { font-size: 2.25rem; } .standfirst { font-size: 1.05rem; } .related > div { grid-template-columns: 1fr; } }
+</style>
