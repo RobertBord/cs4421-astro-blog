@@ -1,0 +1,9 @@
+---
+import ArticleArchive from '../../../components/ArticleArchive.astro';
+import { CATEGORIES, categorySlug } from '../../../utils/posts';
+export function getStaticPaths() {
+	return CATEGORIES.map(category => ({ params: { category: categorySlug(category) }, props: { category } }));
+}
+const { category } = Astro.props;
+---
+<ArticleArchive category={category} />

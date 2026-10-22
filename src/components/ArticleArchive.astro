@@ -1,0 +1,43 @@
+---
+import { getCollection } from 'astro:content';
+import BaseHead from './BaseHead.astro';
+import Header from './Header.astro';
+import Footer from './Footer.astro';
+import PostCard from './PostCard.astro';
+import { CATEGORIES, categorySlug, publishedPosts, type Category } from '../utils/posts';
+interface Props { category?: Category; }
+const { category } = Astro.props;
+const allPosts = publishedPosts(await getCollection('blog'));
+const posts = category ? allPosts.filter(post => post.data.category === category) : allPosts;
+const title = category ?? 'All articles';
+---
+<!doctype html>
+<html lang="en">
+	<head><BaseHead title={title} description={`Independent F1 bits ${category?.toLowerCase() ?? 'Formula 1'} stories, analysis, and explainers.`} /></head>
+	<body>
+		<Header />
+		<main id="main" class="site-width" tabindex="-1">
+			<p class="eyebrow">The F1 bits archive</p>
+			<div class="archive-heading"><h1>{title}</h1><span>{posts.length} {posts.length === 1 ? 'story' : 'stories'}</span></div>
+			<nav class="topics" aria-label="Article categories">
+				<a href="/blog/" aria-current={!category ? 'page' : undefined}>All articles</a>
+				{CATEGORIES.map(topic => <a href={`/blog/category/${categorySlug(topic)}/`} aria-current={topic === category ? 'page' : undefined}>{topic}</a>)}
+			</nav>
+			{posts.length ? <div class="stories">{posts.map(post => <PostCard post={post} />)}</div> : <div class="empty"><h2>No stories here yet.</h2><p>The next story is still on the grid.</p><a href="/blog/">Browse all articles</a></div>}
+		</main>
+		<Footer />
+	</body>
+</html>
+<style>
+	main { max-width: none; padding: 3rem 0; }
+	h1 { font-size: 3rem; margin: 0; }
+	.archive-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
+	.archive-heading span { color: rgb(var(--gray)); font-size: 0.85rem; white-space: nowrap; }
+	.topics { display: flex; flex-wrap: wrap; gap: 0.25rem 1.5rem; border-block: 1px solid var(--line); margin-block: 2rem; padding: 0.75rem 0; }
+	.topics a { padding: 0.4rem 0; text-decoration: none; color: var(--ink); font-size: 0.85rem; border-bottom: 2px solid transparent; }
+	.topics a[aria-current] { color: var(--accent); border-color: var(--accent); font-weight: bold; }
+	.stories { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2.5rem; }
+	.empty { padding-block: 3rem; }
+	.empty h2 { font-size: 2rem; }
+	@media (max-width: 680px) { .stories { grid-template-columns: 1fr; } h1 { font-size: 2.25rem; } }
+</style>
