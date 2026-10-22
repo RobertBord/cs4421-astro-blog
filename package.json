@@ -12,6 +12,7 @@
     "astro": "astro",
     "lint": "eslint .",
     "test:unit": "vitest --exclude **/cdk/**",
+    "brand:assets": "node scripts/brand-assets.mjs",
     "check": "astro check"
   },
   "dependencies": {
