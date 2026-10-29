@@ -5,7 +5,8 @@ export default defineConfig({
 	fullyParallel: true,
 	use: { baseURL: 'http://127.0.0.1:4497', trace: 'retain-on-failure' },
 	webServer: {
-		command: 'npm run build && npx vite preview --host 127.0.0.1 --port 4497 --strictPort',
+		command: 'npm run build && node dist/server/entry.mjs',
+		env: { HOST: '127.0.0.1', PORT: '4497' },
 		url: 'http://127.0.0.1:4497',
 		reuseExistingServer: false,
 	},

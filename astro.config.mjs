@@ -1,6 +1,6 @@
 // @ts-check
 
-// import mdx from '@astrojs/mdx';
+import mdx from '@astrojs/mdx';
 // import sitemap from '@astrojs/sitemap';
 import { defineConfig, fontProviders } from 'astro/config';
 
@@ -10,6 +10,7 @@ import node from '@astrojs/node';
 export default defineConfig({
   site: process.env.SITE_URL || 'https://example.com',
 	output: 'server',
+  integrations: [mdx()],
 
   fonts: [
       {
