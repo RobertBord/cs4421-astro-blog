@@ -4,6 +4,8 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 COPY . .
+ARG SITE_URL
+ENV SITE_URL=${SITE_URL}
 RUN npm run build
 
 # STAGE 2: Lean Production Runner
