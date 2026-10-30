@@ -1,18 +1,15 @@
 ---
-import { type CollectionEntry, getCollection, getEntry, render } from 'astro:content';
+import { getCollection, getEntry, render } from 'astro:content';
 import BlogPost from '../../layouts/BlogPost.astro';
-import { publishedPosts, relatedPosts } from '../../utils/posts';
+import { relatedPosts } from '../../utils/posts';
 
-export async function getStaticPaths() {
-	const posts = publishedPosts(await getCollection('blog'));
-	return posts.map((post) => ({
-		params: { slug: post.id },
-		props: post,
-	}));
+const { slug } = Astro.params;
+const post = slug ? await getEntry('blog', slug) : undefined;
+
+if (!post || post.data.draft) {
+	return new Response('Article not found', { status: 404 });
 }
-type Props = CollectionEntry<'blog'>;
 
-const post = Astro.props;
 const { Content } = await render(post);
 const author = post.data.author ? await getEntry(post.data.author) : undefined;
 const related = relatedPosts(await getCollection('blog'), post);

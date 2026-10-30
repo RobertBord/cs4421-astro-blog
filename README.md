@@ -29,10 +29,15 @@ npx playwright install chromium
 npm run test:e2e
 ```
 
-The browser suite builds production output and uses its own strict-port server
-on 4497. It covers desktop/mobile accessibility, responsive layouts, navigation,
-article images, metadata, feeds, and redirects. Screenshots and traces live in
-the ignored test-results/ directory. The CI workflow runs the same checks.
+The browser suite builds production SSR output and starts the standalone Node
+server on 127.0.0.1:4497. It covers desktop/mobile accessibility, responsive
+layouts, Markdown and MDX articles, category navigation, images, metadata, RSS,
+unknown-route 404s, and draft exclusion. Screenshots and traces live in the
+ignored test-results/ directory. The CI workflow runs the same checks.
+
+Articles and category pages resolve request parameters on the server. Unknown
+articles, drafts, and unknown categories return HTTP 404. The intentionally
+unpublished draft-preview-check entry is a regression fixture, not public content.
 
 ## Publishing
 
@@ -76,9 +81,16 @@ SITE_URL=https://your-actual-site.example npm run build
 
 Without that variable, local builds retain the old example.com origin, which
 must not be used for a public launch. Links assume deployment at the origin root.
-Infrastructure under cdk/ is unchanged. Starter URLs redirect to the archive
-using static HTML meta refresh; configure host-level redirects separately if
-HTTP 301 responses are required.
+For a local production SSR check, run the built Node entrypoint:
+
+```sh
+HOST=127.0.0.1 PORT=4321 node dist/server/entry.mjs
+```
+
+The SSR output needs a Node runtime; it cannot be served as static files alone.
+The current configuration does not generate sitemaps or configure legacy starter
+redirects. Removed starter article URLs return HTTP 404. Container deployment
+and sitemap support are separate follow-up work.
 
 ## Brand And Editorial Notes
 

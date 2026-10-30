@@ -1,9 +1,10 @@
 ---
 import ArticleArchive from '../../../components/ArticleArchive.astro';
 import { CATEGORIES, categorySlug } from '../../../utils/posts';
-export function getStaticPaths() {
-	return CATEGORIES.map(category => ({ params: { category: categorySlug(category) }, props: { category } }));
+const category = CATEGORIES.find(topic => categorySlug(topic) === Astro.params.category);
+
+if (!category) {
+	return new Response('Category not found', { status: 404 });
 }
-const { category } = Astro.props;
 ---
 <ArticleArchive category={category} />
